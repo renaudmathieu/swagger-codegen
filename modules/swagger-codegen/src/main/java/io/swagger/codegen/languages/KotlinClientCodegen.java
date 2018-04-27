@@ -22,7 +22,8 @@ public class KotlinClientCodegen extends AbstractKotlinCodegen {
     public enum DateLibrary {
         STRING("string"),
         THREETENBP("threetenbp"),
-        JAVA8("java8");
+        JAVA8("java8"),
+        JODA("joda");
 
         public final String value;
 
@@ -55,6 +56,7 @@ public class KotlinClientCodegen extends AbstractKotlinCodegen {
         dateOptions.put(DateLibrary.THREETENBP.value, "Threetenbp");
         dateOptions.put(DateLibrary.STRING.value, "String");
         dateOptions.put(DateLibrary.JAVA8.value, "Java 8 native JSR310");
+        dateOptions.put(DateLibrary.JODA.value, "Joda");
         dateLibrary.setEnum(dateOptions);
         cliOptions.add(dateLibrary);
     }
@@ -97,6 +99,13 @@ public class KotlinClientCodegen extends AbstractKotlinCodegen {
             typeMapping.put("DateTime", "kotlin.String");
         } else if (DateLibrary.JAVA8.value.equals(dateLibrary)) {
             additionalProperties.put(DateLibrary.JAVA8.value, true);
+        } else if (DateLibrary.JODA.value.equals(dateLibrary)) {
+            additionalProperties.put(DateLibrary.JODA.value, true);
+            typeMapping.put("date", "LocalDate");
+            typeMapping.put("DateTime", "LocalDateTime");
+            importMapping.put("LocalDate", "org.joda.time.DateTime");
+            importMapping.put("LocalDateTime", "org.joda.time.DateTime");
+            defaultIncludes.add("org.joda.time.DateTime");
         }
 
         supportingFiles.add(new SupportingFile("README.mustache", "", "README.md"));
