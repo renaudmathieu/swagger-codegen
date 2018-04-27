@@ -369,6 +369,9 @@ public class KotlinClientCodegen extends DefaultCodegen implements CodegenConfig
         String modifiedName = name.replaceAll("\\.", "");
         modifiedName = sanitizeKotlinSpecificNames(modifiedName);
 
+        // Camelize name of nested properties
+        modifiedName = camelize(modifiedName);
+
         if (reservedWords.contains(modifiedName)) {
             modifiedName = escapeReservedWord(modifiedName);
         }
@@ -448,6 +451,12 @@ public class KotlinClientCodegen extends DefaultCodegen implements CodegenConfig
         }
 
         return name;
+    }
+
+    @Override
+    public String toModelFilename(String name) {
+        // Should be the same as the model name
+        return toModelName(name);
     }
 
     @Override
